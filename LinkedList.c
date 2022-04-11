@@ -2,12 +2,13 @@
 #include <stdlib.h>
 #include <string.h>
 #include "LinkedList.h"
+#include "utils.h"
 
 linked_list_t*
 ll_create(unsigned int data_size)
 {
     linked_list_t *list = calloc(1, sizeof(linked_list_t));
-    DIE(!list, "malloc error");
+    DIE(!list, ALLOC_ERR);
     list->data_size = data_size;
     return list;
 }
@@ -15,11 +16,11 @@ ll_create(unsigned int data_size)
 ll_node_t*
 ll_make_node(ll_node_t *next, const void *data, unsigned int data_size) {
     ll_node_t *node = calloc(1, sizeof(ll_node_t));
-    DIE(!node, "malloc error");
+    DIE(!node, ALLOC_ERR);
 
     node->next = next;
     node->data = calloc(1, data_size);
-    DIE(!node->data, "malloc error");
+    DIE(!node->data, ALLOC_ERR);
 
     memcpy(node->data, data, data_size);
 
@@ -29,6 +30,9 @@ ll_make_node(ll_node_t *next, const void *data, unsigned int data_size) {
 void
 ll_add_nth_node(linked_list_t* list, unsigned int n, const void* new_data)
 {
+    if (list == NULL)
+        return;
+
     ll_node_t *prev, *node;
 
     if (n > list->size)
@@ -113,25 +117,11 @@ ll_free(linked_list_t* list)
 }
 
 void
-ll_print_int(linked_list_t* list)
+ll_print(linked_list_t* list, void *print_func(void *))
 {
     ll_node_t *node = list->head;
     for (unsigned int i = 0; i < list->size; i++) {
-        int *tmp = node->data;
-        printf("%d ", *tmp);
-        node = node->next;
-    }
-
-    printf("\n");
-}
-
-void
-ll_print_string(linked_list_t* list)
-{
-    ll_node_t *node = list->head;
-    for (unsigned int i = 0; i < list->size; i++) {
-        char *string = node->data;
-        printf("%s ", string);
+        print_func(node->data);
         node = node->next;
     }
 

@@ -1,11 +1,9 @@
-/*
- * Hashtable.h
- * Alexandru-Cosmin Mihai
- */
 #ifndef __HASHTABLE_H
 #define __HASHTABLE_H
 
 #include "LinkedList.h"
+
+#define HT_U "Hashtable uninitialized"
 
 typedef struct info info;
 struct info {
@@ -22,13 +20,15 @@ struct hashtable_t {
 	int (*compare_function)(void*, void*);
 };
 
+//----Hashtable functions
+
 hashtable_t *
 ht_create(unsigned int hmax, unsigned int (*hash_function)(void*),
 		int (*compare_function)(void*, void*));
 
 void
 ht_put(hashtable_t *ht, void *key, unsigned int key_size,
-	void *value, unsigned int value_size);
+	void *value, unsigned int value_size, double load_factor);
 
 void *
 ht_get(hashtable_t *ht, void *key);
@@ -42,22 +42,22 @@ ht_remove_entry(hashtable_t *ht, void *key);
 void
 ht_free(hashtable_t *ht);
 
-/*
- * Functii de comparare a cheilor:
- */
+void
+resize_ht(hashtable_t *ht, double load_factor);
+
+//----Compare key functions
 int
 compare_function_ints(void *a, void *b);
 
 int
 compare_function_strings(void *a, void *b);
 
-/*
- * Functii de hashing:
- */
+//----Hashing functions
+
 unsigned int
 hash_function_int(void *a);
 
 unsigned int
 hash_function_string(void *a);
 
-#endif
+#endif  // __HASHTABLE_H

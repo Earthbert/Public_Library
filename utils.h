@@ -11,15 +11,17 @@
 #include <stdio.h>
 #include <errno.h>
 
+#define ALLOC_ERR "Allocation Error"
+
 /* useful macro for handling error codes */
 #define DIE(assertion, call_description)				\
-	do {								\
-		if (assertion) {					\
-			fprintf(stderr, "(%s, %d): ",			\
-					__FILE__, __LINE__);		\
-			perror(call_description);			\
-			exit(errno);				        \
-		}							\
+	do {												\
+		if (assertion) {								\
+			fprintf(stderr, "(%s, %d): ",				\
+					__FILE__, __LINE__);				\
+			perror(call_description);					\
+			exit(errno);				        		\
+		}												\
 	} while (0)
 
 #endif /* __UTILS_H_ */
