@@ -2,8 +2,9 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "library.h"
+#include "library_op.h"
 
+// Used at removing entries from lib hashtable
 void
 free_book_struct(void *book)
 {
@@ -11,6 +12,8 @@ free_book_struct(void *book)
 	free(book);
 }
 
+// Addes book in library
+// Reads definitions from stdin
 void
 add_book(hashtable_t *lib, char *book_name, unsigned int nr_defs)
 {
@@ -18,6 +21,7 @@ add_book(hashtable_t *lib, char *book_name, unsigned int nr_defs)
 	b_data.defs = ht_create(HTMAX, &hash_function_string, &compare_function_strings);
 	b_data.purchases = 0;
 	b_data.rating = 0;
+	b_data.barrowed = 0;
 
 	char def_key[20];
 	char def_value[20];
@@ -29,6 +33,7 @@ add_book(hashtable_t *lib, char *book_name, unsigned int nr_defs)
 	ht_put(lib, book_name, strlen(book_name) + 1, &b_data, sizeof(b_data), LOAD_F);
 }
 
+// Prints information about a book
 void
 get_book(hashtable_t *lib, char *book_name)
 {
@@ -41,6 +46,7 @@ get_book(hashtable_t *lib, char *book_name)
 	printf("Name:%s Rating:%s Purchase:%s\n", book_name, b_data->rating, b_data->purchases);
 }
 
+// Removes a book 
 void
 rmv_book(hashtable_t *lib, char *book_name)
 {
@@ -51,6 +57,7 @@ rmv_book(hashtable_t *lib, char *book_name)
 	}
 }
 
+// Adds a new definion in a book
 void
 add_def(hashtable_t *lib, char *book_name, char *def_key, char *def_value)
 {
@@ -63,6 +70,7 @@ add_def(hashtable_t *lib, char *book_name, char *def_key, char *def_value)
 	ht_put(lib, def_key, strlen(def_key) + 1, def_value, strlen(def_value) + 1, LOAD_F);
 }
 
+// Prints a requested definition
 void
 get_def(hashtable_t *lib, char *book_name, char *def_key)
 {
@@ -81,6 +89,7 @@ get_def(hashtable_t *lib, char *book_name, char *def_key)
 	printf("%s\n", def);
 }
 
+// Removes definitions from a given book
 void
 rmv_def(hashtable_t *lib, char *book_name, char *def_key)
 {
@@ -97,6 +106,7 @@ rmv_def(hashtable_t *lib, char *book_name, char *def_key)
 	}
 }
 
+// Compares two books by rating, nr of purchases and name in order.
 int
 compare_books(info_t *data_1, info_t *data_2) {
 	book_info_t *b_data_1 = (book_info_t *)data_1->value;

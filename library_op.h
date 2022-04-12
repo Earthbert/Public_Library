@@ -3,7 +3,7 @@
 
 #include "Hashtable.h"
 
-// Error messages
+// Messages
 #define BOOK_NOT_FOUND printf("The book is not in the library.\n");
 #define DEF_NOT_FOUND printf("The definition is not in the book.\n");
 
@@ -18,7 +18,8 @@ struct book_info_t
 	double rating;
 	// Nr of purchases
 	unsigned int purchases;
-
+	//  Is 1 if book is barrowed
+	__int8_t barrowed;
 };
 
 void
