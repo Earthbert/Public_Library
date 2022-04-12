@@ -5,20 +5,19 @@
 
 #define HT_U "Hashtable uninitialized"
 
-typedef struct info info;
-struct info {
+typedef struct {
 	void *key;
 	void *value;
-};
+} info;
 
-typedef struct hashtable_t hashtable_t;
-struct hashtable_t {
+
+typedef struct {
 	linked_list_t **buckets;
 	unsigned int size;
 	unsigned int hmax;
 	unsigned int (*hash_function)(void*);
 	int (*compare_function)(void*, void*);
-};
+} hashtable_t;
 
 //----Hashtable functions
 
@@ -40,7 +39,7 @@ void
 ht_remove_entry(hashtable_t *ht, void *key);
 
 void
-ht_free(hashtable_t *ht);
+ht_free(hashtable_t *ht, void *free_value_func(void *));
 
 void
 resize_ht(hashtable_t *ht, double load_factor);

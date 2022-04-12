@@ -180,7 +180,7 @@ ht_remove_entry(hashtable_t *ht, void *key)
 
 // Frees memory of a hashtable
 void
-ht_free(hashtable_t *ht)
+ht_free(hashtable_t *ht, void *free_value_func(void *))
 {
 	DIE(!ht, HT_U);
 
@@ -190,7 +190,7 @@ ht_free(hashtable_t *ht)
 			ll_node_t *next = node->next;
 			info *data = (info *)node->data;
 			free(data->key);
-			free(data->value);
+			free_data_func(data->value);
 			free(data);
 			free(node);
 			node = next;
