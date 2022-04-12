@@ -79,7 +79,7 @@ ht_create(unsigned int hmax, unsigned int (*hash_function)(void*),
 	ht->buckets = calloc(hmax, sizeof(linked_list_t *));
 	DIE(!ht->buckets, ALLOC_ERR);
 	for (unsigned int i = 0; i < hmax; i++) {
-		ht->buckets[i] = ll_create(sizeof(info));
+		ht->buckets[i] = ll_create(sizeof(info_t));
 	}
 	ht->hmax = hmax;
 	ht->hash_function = hash_function;
@@ -102,7 +102,7 @@ ht_put(hashtable_t *ht, void *key, unsigned int key_size,
 	if (old_value != NULL) {
 		memcpy(old_value, value, value_size);
 	} else {
-		info set;
+		info_t set;
 		set.key = calloc(1, key_size);
 		DIE(!set.key, ALLOC_ERR);
 		memcpy(set.key, key, key_size);
@@ -124,8 +124,8 @@ ht_get(hashtable_t *ht, void *key)
 	ll_node_t *node = ht->buckets[index]->head;
 
 	while (node != NULL) {
-		if(ht->compare_function(key, ((info *)node->data)->key) == 0)
-			return ((info *)node->data)->value;
+		if(ht->compare_function(key, ((info_t *)node->data)->key) == 0)
+			return ((info_t *)node->data)->value;
 		node = node->next;
 	}
 
@@ -143,7 +143,7 @@ ht_has_key(hashtable_t *ht, void *key)
 	ll_node_t *node = ht->buckets[index]->head;
 	while (node)
 	{
-		if(ht->compare_function(key, ((info *)node->data)->key) == 0)
+		if(ht->compare_function(key, ((info_t *)node->data)->key) == 0)
 			return 1;
 		node = node->next;
 	}
@@ -152,8 +152,9 @@ ht_has_key(hashtable_t *ht, void *key)
 }
 
 // Removes entry from hashtable and free all data asociated with it
-void
-ht_remove_entry(hashtable_t *ht, void *key)
+// Returns 1 is an entry was removed
+int
+ht_remove_entry(hashtable_t *ht, void *key, void (*free_value_f)(void *))
 {
 	DIE(!ht, HT_U);
 
@@ -163,24 +164,25 @@ ht_remove_entry(hashtable_t *ht, void *key)
 	unsigned int n = 0;
 	while (node)
 	{
-		if(ht->compare_function(key, ((info *)node->data)->key) == 0) {
+		if(ht->compare_function(key, ((info_t *)node->data)->key) == 0) {
 			ll_node_t *node = ll_remove_nth_node(ht->buckets[index], n);
-			info *data = (info *)node->data;
+			info_t *data = (info_t *)node->data;
 			free(data->key);
-			free(data->value);
+			free_value_f(data->value);
 			free(data);
 			free(node);
 			ht->size--;
-			return;
+			return 1;
 		}
 		n++;
 		node = node->next;
 	}
+	return 0;
 }
 
 // Frees memory of a hashtable
 void
-ht_free(hashtable_t *ht, void *free_value_func(void *))
+ht_free(hashtable_t *ht, void (*free_value_f)(void *))
 {
 	DIE(!ht, HT_U);
 
@@ -188,15 +190,16 @@ ht_free(hashtable_t *ht, void *free_value_func(void *))
 		ll_node_t *node = ht->buckets[i]->head;
 		while(node) {
 			ll_node_t *next = node->next;
-			info *data = (info *)node->data;
+			info_t *data = (info_t *)node->data;
 			free(data->key);
-			free_data_func(data->value);
+			free_value_f(data->value);
 			free(data);
 			free(node);
 			node = next;
 		}
 		free(ht->buckets[i]);
 	}
+
 	free(ht->buckets);
 	free(ht);
 }
@@ -214,12 +217,12 @@ resize_ht(hashtable_t *ht, double load_factor) {
 	unsigned int new_hmax = 2 * ht->hmax;
 
 	for (unsigned int i = 0; i < new_hmax; i++)
-		new_buckets[i] = ll_create(sizeof(info));
+		new_buckets[i] = ll_create(sizeof(info_t));
 	
 	for (unsigned int i = 0; i < ht->hmax; i++) {
 		ll_node_t *node = ht->buckets[i]->head;
 		while (node) {
-			info *data = (info *)node->data;
+			info_t *data = (info_t *)node->data;
 			unsigned int index = ht->hash_function(data->key) % (new_hmax);
 			ll_add_nth_node(new_buckets[index], new_buckets[index]->size, data);
 			node = node->next;

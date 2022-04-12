@@ -3,21 +3,28 @@
 
 #include "LinkedList.h"
 
+#define HTMAX 10
+#define LOAD_F 1.0
+
 #define HT_U "Hashtable uninitialized"
 
-typedef struct {
+typedef struct info_t info_t;
+struct info_t
+{
 	void *key;
 	void *value;
-} info;
+};
 
 
-typedef struct {
+typedef struct hashtable_t hashtable_t;
+struct hashtable_t
+{
 	linked_list_t **buckets;
 	unsigned int size;
 	unsigned int hmax;
 	unsigned int (*hash_function)(void*);
 	int (*compare_function)(void*, void*);
-} hashtable_t;
+};
 
 //----Hashtable functions
 
@@ -35,11 +42,11 @@ ht_get(hashtable_t *ht, void *key);
 int
 ht_has_key(hashtable_t *ht, void *key);
 
-void
-ht_remove_entry(hashtable_t *ht, void *key);
+int
+ht_remove_entry(hashtable_t *ht, void *key, void (*free_value_f)(void *));
 
 void
-ht_free(hashtable_t *ht, void *free_value_func(void *));
+ht_free(hashtable_t *ht, void (*free_value_f)(void *));
 
 void
 resize_ht(hashtable_t *ht, double load_factor);
