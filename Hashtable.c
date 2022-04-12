@@ -233,3 +233,24 @@ resize_ht(hashtable_t *ht, double load_factor) {
 	ht->hmax = new_hmax;
 	ht->buckets = new_buckets;
 }
+
+// Return a sorted array of the hashtable entries
+// It will compare using value and key
+// It doesn't copy the data
+info_t **
+ht_sort(hashtable_t *ht, int (*compare_func)(info_t *, info_t *)) {
+	info_t **book_arr = calloc(ht->size, sizeof(info_t *));
+	unsigned int len = 0;
+
+	for (unsigned int i = 0; i < ht->hmax; i++) {
+		ll_node_t *node = ht->buckets[i]->head;
+		while (node) {
+			book_arr[len] = node->data;
+			len++;
+			node = node->next;
+		}
+	}
+
+	qsort(book_arr, len, sizeof(info_t *), compare_func);
+	return book_arr;
+}

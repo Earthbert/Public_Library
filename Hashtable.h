@@ -51,6 +51,9 @@ ht_free(hashtable_t *ht, void (*free_value_f)(void *));
 void
 resize_ht(hashtable_t *ht, double load_factor);
 
+info_t **
+ht_sort(hashtable_t *ht, int (*compare_func)(info_t *, info_t *));
+
 //----Compare key functions
 int
 compare_function_ints(void *a, void *b);

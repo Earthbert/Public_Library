@@ -9,8 +9,9 @@
 
 // Stored data about a book
 // The name will be stored as the key in the lib hashtable
-typedef struct book_t book_t;
-struct book_t{
+typedef struct book_info_t book_info_t;
+struct book_info_t
+{
 	// Hashtable of definitions
 	hashtable_t *defs;
 	// Rating of the book
@@ -37,5 +38,8 @@ get_def(hashtable_t *lib, char *book_name, char *def_key);
 
 void
 rmv_def(hashtable_t *lib, char *book_name, char *def_key);
+
+int
+compare_books(info_t *data_1, info_t *data_2);
 
 #endif  // _LIBRARY_H_

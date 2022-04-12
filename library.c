@@ -7,14 +7,14 @@
 void
 free_book_struct(void *book)
 {
-	ht_free(((book_t *)book)->defs, &free);
+	ht_free(((book_info_t *)book)->defs, &free);
 	free(book);
 }
 
 void
 add_book(hashtable_t *lib, char *book_name, unsigned int nr_defs)
 {
-	book_t b_data;
+	book_info_t b_data;
 	b_data.defs = ht_create(HTMAX, &hash_function_string, &compare_function_strings);
 	b_data.purchases = 0;
 	b_data.rating = 0;
@@ -32,13 +32,13 @@ add_book(hashtable_t *lib, char *book_name, unsigned int nr_defs)
 void
 get_book(hashtable_t *lib, char *book_name)
 {
-	book_t *book = ht_get(lib, book_name);
-	if (!book) {
+	book_info_t *b_data = ht_get(lib, book_name);
+	if (!b_data) {
 		BOOK_NOT_FOUND
 		return;
 	}
 
-	printf("Name:%s Rating:%s Purchase:%s\n", book_name, book->rating, book->purchases);
+	printf("Name:%s Rating:%s Purchase:%s\n", book_name, b_data->rating, b_data->purchases);
 }
 
 void
@@ -54,8 +54,8 @@ rmv_book(hashtable_t *lib, char *book_name)
 void
 add_def(hashtable_t *lib, char *book_name, char *def_key, char *def_value)
 {
-	book_t *book = ht_get(lib, book_name);
-	if (!book) {
+	book_info_t *b_data = ht_get(lib, book_name);
+	if (!b_data) {
 		BOOK_NOT_FOUND
 		return;
 	}
@@ -66,13 +66,13 @@ add_def(hashtable_t *lib, char *book_name, char *def_key, char *def_value)
 void
 get_def(hashtable_t *lib, char *book_name, char *def_key)
 {
-	book_t *book = ht_get(lib, book_name);
-	if (!book) {
+	book_info_t *b_data = ht_get(lib, book_name);
+	if (!b_data) {
 		BOOK_NOT_FOUND
 		return;
 	}
 
-	char *def = ht_get(book->defs, def_key);
+	char *def = ht_get(b_data->defs, def_key);
 	if (!def) {
 		DEF_NOT_FOUND
 		return;
@@ -84,15 +84,36 @@ get_def(hashtable_t *lib, char *book_name, char *def_key)
 void
 rmv_def(hashtable_t *lib, char *book_name, char *def_key)
 {
-	book_t *book = ht_get(lib, book_name);
-	if (!book) {
+	book_info_t *b_data = ht_get(lib, book_name);
+	if (!b_data) {
 		BOOK_NOT_FOUND
 		return;
 	}
 
-	int ret_val = ht_remove_entry(book->defs, def_key, &free);
+	int ret_val = ht_remove_entry(b_data->defs, def_key, &free);
 
 	if (!ret_val) {
 		DEF_NOT_FOUND
 	}
+}
+
+int
+compare_books(info_t *data_1, info_t *data_2) {
+	book_info_t *b_data_1 = (book_info_t *)data_1->value;
+	book_info_t *b_data_2 = (book_info_t *)data_2->value;
+
+	if (b_data_1->rating > b_data_2->rating) {
+		return 1;
+	} else if (b_data_1->rating < b_data_2->rating) {
+		return -1;
+	}
+
+	if (b_data_1->purchases != b_data_2->purchases) {
+		return b_data_1->purchases - b_data_2->purchases;
+	}
+
+	char *name_1 = data_1->key;
+	char *name_2 = data_2->key;
+
+	return strcmp(name_1, name_2);
 }
