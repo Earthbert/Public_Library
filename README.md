@@ -1,6 +1,6 @@
 # Public_Library
 
-##Will simulate a library.    
+## Will simulate a library.    
 - All books in the library are dictionaries with word and definitions pairs.   
 - It has a data base of users which can borrow books.    
 - If a user doesn't return the book he will be banned.    
