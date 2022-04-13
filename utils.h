@@ -9,6 +9,7 @@
 
 #include <stdlib.h>
 #include <stdio.h>
+#include <string.h>
 #include <errno.h>
 
 #define ALLOC_ERR "Allocation Error"
@@ -28,7 +29,7 @@ char *
 strdup(char *s)
 {
 	int len = strlen(s) + 1;
-	char *new_s = calloc(len, sizeof(char));
+	char *new_s = (char *)calloc(len, sizeof(char));
 	DIE(!new_s, ALLOC_ERR);
 	memcpy(new_s, s, len);
 	return new_s;

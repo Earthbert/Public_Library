@@ -5,11 +5,21 @@
 #include "user_op.h"
 #include "library_op.h"
 
+void
+free_user_struct(void *user)
+{
+	if (((user_data_t *)user)->b_book)
+		free(((user_data_t *)user)->b_book);
+	free(user);
+}
 
 // Adds user in library database
 void
-add_user(hashtable_t *usr_table, char *name)
+add_user(hashtable_t *usr_table)
 {
+	char name[MAX_U_NAME_SIZE];
+	scanf("%s", name);
+
 	if (ht_has_key(usr_table, name)) {
 		ALREADY_REG
 		return;
@@ -27,8 +37,15 @@ add_user(hashtable_t *usr_table, char *name)
 // Registers the act of borrowing
 // Book becomes unavailable
 void
-borrow_book(hashtable_t *usr_table, hashtable_t *lib , char *name, char *b_name, int days)
+borrow_book(hashtable_t *usr_table, hashtable_t *lib)
 {
+	char name[MAX_U_NAME_SIZE];
+	scanf("%s ", name);
+	char b_name[MAX_B_NAME_SIZE];
+	SCANF_WHOLE(b_name);
+	int days;
+	scanf("%d ", &days);
+
 	user_data_t *usr_data = ht_get(usr_table, name);
 	if (!usr_data) {
 		NOT_REG
@@ -63,8 +80,17 @@ borrow_book(hashtable_t *usr_table, hashtable_t *lib , char *name, char *b_name,
 // The score of a user is changed based on his punctuality
 // Book rating is updated
 void
-return_book(hashtable_t *usr_table, hashtable_t *lib, char *name, char *b_name, int days, double rating)
+return_book(hashtable_t *usr_table, hashtable_t *lib)
 {
+	char name[MAX_U_NAME_SIZE];
+	scanf("%s ", name);
+	char b_name[MAX_B_NAME_SIZE];
+	SCANF_WHOLE(b_name);
+	int days;
+	scanf("%d ", &days);
+	double rating;
+	scanf("%lf", &rating);
+
 	user_data_t *usr_data = ht_get(usr_table, name);
 	if (!usr_data) {
 		NOT_REG
@@ -110,8 +136,13 @@ return_book(hashtable_t *usr_table, hashtable_t *lib, char *name, char *b_name, 
 // Registers losing a book
 // The book is removed from the lib and user loses score
 void
-lost_book(hashtable_t *usr_table, hashtable_t *lib, char *name, char *b_name)
+lost_book(hashtable_t *usr_table, hashtable_t *lib)
 {
+	char name[MAX_U_NAME_SIZE];
+	scanf("%s ", name);
+	char b_name[MAX_B_NAME_SIZE];
+	SCANF_WHOLE(b_name);
+
 	user_data_t *usr_data = ht_get(usr_table, name);
 	if (!usr_data) {
 		NOT_REG
@@ -122,7 +153,7 @@ lost_book(hashtable_t *usr_table, hashtable_t *lib, char *name, char *b_name)
 		return;
 	}
 
-	rmv_book(lib, b_name);
+	ht_remove_entry(lib, name, &free_book_struct);
 
 	usr_data->score -= 20;
 	if (usr_data->score < 0) {
@@ -133,6 +164,33 @@ lost_book(hashtable_t *usr_table, hashtable_t *lib, char *name, char *b_name)
 	free(usr_data->b_book);
 	usr_data->b_book = NULL;
 	usr_data->days = -1;
+}
+
+// Prints ranking of books and users
+void
+print_ranking(hashtable_t *usr_table, hashtable_t *lib)
+{
+	info_t **sorted_users, **sorted_books;
+	sorted_users = ht_sort(usr_table, &compare_users);
+	sorted_books = ht_sort(lib, &compare_books);
+
+	printf("Books ranking:\n");
+	for (unsigned int i = 0; i < lib->size; i++) {
+		printf("%d. Name:%s Rating:%03f Purchases:%d", i,
+		(char *)sorted_books[i]->key,
+		((book_info_t *)sorted_books[i]->value)->rating,
+		((book_info_t *)sorted_books[i]->value)->purchases);
+	}
+
+	printf("Users ranking:\n");
+	for (unsigned int i = 0; i < lib->size; i++) {
+		printf("%d. Name:%s Points:%d", i,
+		(char *)sorted_books[i]->key,
+		((user_data_t *)sorted_books[i]->value)->score);
+	}
+
+	free(sorted_users);
+	free(sorted_books);
 }
 
 // Compares users by score and if needed by name

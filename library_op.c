@@ -12,19 +12,23 @@ free_book_struct(void *book)
 	free(book);
 }
 
-// Addes book in library
-// Reads definitions from stdin
+// Adds book in library
 void
-add_book(hashtable_t *lib, char *book_name, unsigned int nr_defs)
+add_book(hashtable_t *lib)
 {
+	char book_name[MAX_B_NAME_SIZE];
+	SCANF_WHOLE(book_name);
+	unsigned int nr_defs;
+	scanf("%u ", &nr_defs);
+
 	book_info_t b_data;
 	b_data.defs = ht_create(HTMAX, &hash_function_string, &compare_function_strings);
 	b_data.purchases = 0;
 	b_data.rating = 0;
 	b_data.barrowed = 0;
 
-	char def_key[20];
-	char def_value[20];
+	char def_key[MAX_KEY_SIZE];
+	char def_value[MAX_VAL_SIZE];
 	for (unsigned int i = 0; i < nr_defs; i++) {
 		scanf("%s %s", def_key, def_value);
 		ht_put(b_data.defs, def_key, strlen(def_key) + 1, def_value, strlen(def_value) + 1, LOAD_F);
@@ -35,8 +39,11 @@ add_book(hashtable_t *lib, char *book_name, unsigned int nr_defs)
 
 // Prints information about a book
 void
-get_book(hashtable_t *lib, char *book_name)
-{
+get_book(hashtable_t *lib)
+{	
+	char book_name[MAX_B_NAME_SIZE];
+	SCANF_WHOLE(book_name);
+
 	book_info_t *b_data = ht_get(lib, book_name);
 	if (!b_data) {
 		BOOK_NOT_FOUND
@@ -48,8 +55,11 @@ get_book(hashtable_t *lib, char *book_name)
 
 // Removes a book 
 void
-rmv_book(hashtable_t *lib, char *book_name)
+rmv_book(hashtable_t *lib)
 {
+	char book_name[MAX_B_NAME_SIZE];
+	SCANF_WHOLE(book_name);
+
 	int ret_val = ht_remove_entry(lib, book_name, &free_book_struct);
 
 	if (!ret_val) {
@@ -59,8 +69,16 @@ rmv_book(hashtable_t *lib, char *book_name)
 
 // Adds a new definion in a book
 void
-add_def(hashtable_t *lib, char *book_name, char *def_key, char *def_value)
+add_def(hashtable_t *lib)
 {
+	char book_name[MAX_B_NAME_SIZE];
+	SCANF_WHOLE(book_name);
+	char def_key[MAX_KEY_SIZE];
+	scanf("%s ", def_key);
+	char def_value[MAX_VAL_SIZE];
+	scnaf("%s", def_value);
+	
+
 	book_info_t *b_data = ht_get(lib, book_name);
 	if (!b_data) {
 		BOOK_NOT_FOUND
@@ -72,8 +90,13 @@ add_def(hashtable_t *lib, char *book_name, char *def_key, char *def_value)
 
 // Prints a requested definition
 void
-get_def(hashtable_t *lib, char *book_name, char *def_key)
+get_def(hashtable_t *lib)
 {
+	char book_name[MAX_B_NAME_SIZE];
+	SCANF_WHOLE(book_name);
+	char def_key[MAX_KEY_SIZE];
+	scanf("%s ", def_key);
+
 	book_info_t *b_data = ht_get(lib, book_name);
 	if (!b_data) {
 		BOOK_NOT_FOUND
@@ -91,8 +114,13 @@ get_def(hashtable_t *lib, char *book_name, char *def_key)
 
 // Removes definitions from a given book
 void
-rmv_def(hashtable_t *lib, char *book_name, char *def_key)
+rmv_def(hashtable_t *lib)
 {
+	char book_name[MAX_B_NAME_SIZE];
+	SCANF_WHOLE(book_name);
+	char def_key[MAX_KEY_SIZE];
+	scanf("%s ", def_key);
+
 	book_info_t *b_data = ht_get(lib, book_name);
 	if (!b_data) {
 		BOOK_NOT_FOUND
