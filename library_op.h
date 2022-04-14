@@ -2,6 +2,7 @@
 #define _LIBRARY_H_
 
 #include "Hashtable.h"
+#include "utils.h"
 
 // Messages
 #define BOOK_NOT_FOUND printf("The book is not in the library.\n");
@@ -13,7 +14,7 @@
 
 // Used at reading book name
 #define SCANF_WHOLE(str)									\
-	if (scanf("\42%[^\42]\42", str) == 0) {					\			
+	if (scanf(" \42%[^\42]\42", str) == 0) {					\
 			scanf("%s", str);								\
 	}														\
 
@@ -54,6 +55,9 @@ void
 rmv_def(hashtable_t *lib);
 
 int
-compare_books(info_t *data_1, info_t *data_2);
+compare_books(const void *data_1, const void *data_2);
+
+void
+print_b_info(info_t *data);
 
 #endif  // _LIBRARY_H_

@@ -25,14 +25,4 @@
 		}												\
 	} while (0)
 
-char *
-strdup(char *s)
-{
-	int len = strlen(s) + 1;
-	char *new_s = (char *)calloc(len, sizeof(char));
-	DIE(!new_s, ALLOC_ERR);
-	memcpy(new_s, s, len);
-	return new_s;
-}
-
 #endif /* __UTILS_H_ */

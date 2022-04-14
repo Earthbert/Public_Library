@@ -52,7 +52,10 @@ void
 resize_ht(hashtable_t *ht, double load_factor);
 
 info_t **
-ht_sort(hashtable_t *ht, int (*compare_func)(info_t *, info_t *));
+ht_sort(hashtable_t *ht, int (*compare_func)(const void *,const void *), void (*print_data)(info_t *));
+
+void
+ht_print(hashtable_t *ht, void (*print_data)(info_t *));
 
 //----Compare key functions
 int

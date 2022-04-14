@@ -19,7 +19,7 @@ add_book(hashtable_t *lib)
 	char book_name[MAX_B_NAME_SIZE];
 	SCANF_WHOLE(book_name);
 	unsigned int nr_defs;
-	scanf("%u ", &nr_defs);
+	scanf("%u", &nr_defs);
 
 	book_info_t b_data;
 	b_data.defs = ht_create(HTMAX, &hash_function_string, &compare_function_strings);
@@ -50,7 +50,7 @@ get_book(hashtable_t *lib)
 		return;
 	}
 
-	printf("Name:%s Rating:%s Purchase:%s\n", book_name, b_data->rating, b_data->purchases);
+	printf("Name:%s Rating:%03f Purchase:%d\n", book_name, b_data->rating, b_data->purchases);
 }
 
 // Removes a book 
@@ -74,10 +74,9 @@ add_def(hashtable_t *lib)
 	char book_name[MAX_B_NAME_SIZE];
 	SCANF_WHOLE(book_name);
 	char def_key[MAX_KEY_SIZE];
-	scanf("%s ", def_key);
+	scanf("%s", def_key);
 	char def_value[MAX_VAL_SIZE];
-	scnaf("%s", def_value);
-	
+	scanf("%s", def_value);
 
 	book_info_t *b_data = ht_get(lib, book_name);
 	if (!b_data) {
@@ -85,7 +84,7 @@ add_def(hashtable_t *lib)
 		return;
 	}
 
-	ht_put(lib, def_key, strlen(def_key) + 1, def_value, strlen(def_value) + 1, LOAD_F);
+	ht_put(b_data->defs, def_key, strlen(def_key) + 1, def_value, strlen(def_value) + 1, LOAD_F);
 }
 
 // Prints a requested definition
@@ -95,7 +94,7 @@ get_def(hashtable_t *lib)
 	char book_name[MAX_B_NAME_SIZE];
 	SCANF_WHOLE(book_name);
 	char def_key[MAX_KEY_SIZE];
-	scanf("%s ", def_key);
+	scanf("%s", def_key);
 
 	book_info_t *b_data = ht_get(lib, book_name);
 	if (!b_data) {
@@ -119,7 +118,7 @@ rmv_def(hashtable_t *lib)
 	char book_name[MAX_B_NAME_SIZE];
 	SCANF_WHOLE(book_name);
 	char def_key[MAX_KEY_SIZE];
-	scanf("%s ", def_key);
+	scanf("%s", def_key);
 
 	book_info_t *b_data = ht_get(lib, book_name);
 	if (!b_data) {
@@ -136,9 +135,9 @@ rmv_def(hashtable_t *lib)
 
 // Compares two books by rating, nr of purchases and name in order.
 int
-compare_books(info_t *data_1, info_t *data_2) {
-	book_info_t *b_data_1 = (book_info_t *)data_1->value;
-	book_info_t *b_data_2 = (book_info_t *)data_2->value;
+compare_books(const void *data_1, const void *data_2) {
+	book_info_t *b_data_1 = (book_info_t *)((info_t *)data_1)->value;
+	book_info_t *b_data_2 = (book_info_t *)((info_t *)data_2)->value;
 
 	if (b_data_1->rating > b_data_2->rating) {
 		return 1;
@@ -150,8 +149,18 @@ compare_books(info_t *data_1, info_t *data_2) {
 		return b_data_1->purchases - b_data_2->purchases;
 	}
 
-	char *name_1 = data_1->key;
-	char *name_2 = data_2->key;
+	char *name_1 = ((info_t *)data_1)->key;
+	char *name_2 = ((info_t *)data_2)->key;
 
 	return strcmp(name_1, name_2);
+}
+
+// Prints name and book info.
+void
+print_b_info(info_t *data)
+{
+	char *name = data->key;
+	book_info_t *b_data = data->value;
+
+	printf("Name:%s Rating:%03f\n", name, b_data->rating);
 }

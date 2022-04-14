@@ -1,15 +1,8 @@
-/*
- * Hashtable.c
- * Alexandru-Cosmin Mihai
- */
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include "utils.h"
 #include "Hashtable.h"
-
-#define MAX_BUCKET_SIZE 64
 
 int
 compare_function_ints(void *a, void *b)
@@ -36,7 +29,7 @@ compare_function_strings(void *a, void *b)
 }
 
 /*
- * Functii de hashing:
+ * Hashing functions:
  */
 unsigned int
 hash_function_int(void *a)
@@ -110,8 +103,8 @@ ht_put(hashtable_t *ht, void *key, unsigned int key_size,
 		DIE(!set.value, ALLOC_ERR);
 		memcpy(set.value, value, value_size);
 		ll_add_nth_node(ht->buckets[index], ht->buckets[index]->size, &set);
+		ht->size++;
 	}
-	ht->size++;
 }
 
 // Return the value associated with a key
@@ -238,19 +231,42 @@ resize_ht(hashtable_t *ht, double load_factor) {
 // It will compare using value and key
 // It doesn't copy the data
 info_t **
-ht_sort(hashtable_t *ht, int (*compare_func)(info_t *, info_t *)) {
-	info_t **book_arr = calloc(ht->size, sizeof(info_t *));
+ht_sort(hashtable_t *ht, int (*compare_func)(const void *,const void *), void (*print_data)(info_t *)) {
+	if (!ht->size)
+		return NULL;
+
+	info_t **sorted_arr = calloc(ht->size, sizeof(info_t *));
+	DIE(!sorted_arr, ALLOC_ERR);
 	unsigned int len = 0;
 
 	for (unsigned int i = 0; i < ht->hmax; i++) {
 		ll_node_t *node = ht->buckets[i]->head;
 		while (node) {
-			book_arr[len] = node->data;
+			sorted_arr[len] = node->data;
 			len++;
 			node = node->next;
 		}
 	}
 
-	qsort(book_arr, len, sizeof(info_t *), compare_func);
-	return book_arr;
+	for (unsigned int i = 0; i < len; i++) {
+		print_data(sorted_arr[i]);
+	}
+	qsort(sorted_arr, len, sizeof(info_t *), compare_func);
+	return sorted_arr;
+}
+
+// Prints hashtable key and values
+void
+ht_print(hashtable_t *ht, void (*print_data)(info_t *))
+{
+	if (!ht->size)
+		return;
+	
+	for (unsigned int i = 0; i < ht->hmax; i++) {
+		ll_node_t *node = ht->buckets[i]->head;
+		while (node) {
+			print_data(node->data);
+			node = node->next;
+		}
+	}
 }

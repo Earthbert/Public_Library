@@ -49,6 +49,9 @@ void
 print_ranking(hashtable_t *usr_table, hashtable_t *lib);
 
 int
-compare_users(info_t *usr_1, info_t *usr_2);
+compare_users(const void *usr_1, const void *usr_2);
+
+void
+print_u_info(info_t *data);
 
 #endif  // _USER_OP_H_
