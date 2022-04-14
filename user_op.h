@@ -11,7 +11,7 @@
 #define BORROWED printf("The book is borrowed.\n");
 #define ALREADY_BWD printf("You have already borrowed a book.\n");
 #define USER_BANNED(usr) printf("The user %s has been banned.\n", usr);
-#define NOT_BWD_BOOK printf("You didn't borrow this book.");
+#define NOT_BWD_BOOK printf("You didn't borrow this book.\n");
 
 #define MAX_U_NAME_SIZE 20
 

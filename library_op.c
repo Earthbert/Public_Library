@@ -136,8 +136,10 @@ rmv_def(hashtable_t *lib)
 // Compares two books by rating, nr of purchases and name in order.
 int
 compare_books(const void *data_1, const void *data_2) {
-	book_info_t *b_data_1 = (book_info_t *)((info_t *)data_1)->value;
-	book_info_t *b_data_2 = (book_info_t *)((info_t *)data_2)->value;
+	info_t info_1 = *(info_t *)data_1;
+	info_t info_2 = *(info_t *)data_2;
+	book_info_t *b_data_1 = (book_info_t *)info_1.value;
+	book_info_t *b_data_2 = (book_info_t *)info_2.value;
 
 	if (b_data_1->rating > b_data_2->rating) {
 		return 1;
@@ -149,8 +151,8 @@ compare_books(const void *data_1, const void *data_2) {
 		return b_data_1->purchases - b_data_2->purchases;
 	}
 
-	char *name_1 = ((info_t *)data_1)->key;
-	char *name_2 = ((info_t *)data_2)->key;
+	char *name_1 = info_1.key;
+	char *name_2 = info_2.key;
 
 	return strcmp(name_1, name_2);
 }

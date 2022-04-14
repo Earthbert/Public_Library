@@ -230,28 +230,25 @@ resize_ht(hashtable_t *ht, double load_factor) {
 // Return a sorted array of the hashtable entries
 // It will compare using value and key
 // It doesn't copy the data
-info_t **
-ht_sort(hashtable_t *ht, int (*compare_func)(const void *,const void *), void (*print_data)(info_t *)) {
+info_t *
+ht_sort(hashtable_t *ht, int (*compare_func)(const void *,const void *)) {
 	if (!ht->size)
 		return NULL;
 
-	info_t **sorted_arr = calloc(ht->size, sizeof(info_t *));
+	info_t *sorted_arr = calloc(ht->size, sizeof(info_t));
 	DIE(!sorted_arr, ALLOC_ERR);
 	unsigned int len = 0;
 
 	for (unsigned int i = 0; i < ht->hmax; i++) {
 		ll_node_t *node = ht->buckets[i]->head;
 		while (node) {
-			sorted_arr[len] = node->data;
+			sorted_arr[len] = *(info_t *)(node->data);
 			len++;
 			node = node->next;
 		}
 	}
 
-	for (unsigned int i = 0; i < len; i++) {
-		print_data(sorted_arr[i]);
-	}
-	qsort(sorted_arr, len, sizeof(info_t *), compare_func);
+	qsort(sorted_arr, len, sizeof(info_t), compare_func);
 	return sorted_arr;
 }
 

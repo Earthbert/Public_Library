@@ -182,23 +182,23 @@ lost_book(hashtable_t *usr_table, hashtable_t *lib)
 void
 print_ranking(hashtable_t *usr_table, hashtable_t *lib)
 {
-	info_t **sorted_users, **sorted_books;
-	sorted_users = ht_sort(usr_table, &compare_users, &print_u_info);
-	sorted_books = ht_sort(lib, &compare_books, &print_b_info);
+	info_t *sorted_users, *sorted_books;
+	sorted_users = ht_sort(usr_table, &compare_users);
+	sorted_books = ht_sort(lib, &compare_books);
 
 	printf("Books ranking:\n");
 	for (unsigned int i = 0; i < lib->size; i++) {
 		printf("%d. Name:%s Rating:%03f Purchases:%d\n", i + 1,
-		(char *)sorted_books[i]->key,
-		((book_info_t *)sorted_books[i]->value)->rating,
-		((book_info_t *)sorted_books[i]->value)->purchases);
+		(char *)sorted_books[i].key,
+		((book_info_t *)sorted_books[i].value)->rating,
+		((book_info_t *)sorted_books[i].value)->purchases);
 	}
 
 	printf("Users ranking:\n");
 	for (unsigned int i = 0; i < usr_table->size; i++) {
 		printf("%d. Name:%s Points:%d\n", i + 1,
-		(char *)sorted_users[i]->key,
-		((user_data_t *)sorted_users[i]->value)->score);
+		(char *)sorted_users[i].key,
+		((user_data_t *)sorted_users[i].value)->score);
 	}
 
 	if (sorted_users)
@@ -211,12 +211,15 @@ print_ranking(hashtable_t *usr_table, hashtable_t *lib)
 int
 compare_users(const void *usr_1, const void *usr_2)
 {
-	user_data_t *usr_data_1 = (user_data_t *)(((info_t *)usr_1)->value);
-	user_data_t *usr_data_2 = (user_data_t *)(((info_t *)usr_2)->value);
+	info_t info_1 = *(info_t *)usr_1;
+	info_t info_2 = *(info_t *)usr_2;
+	print_u_info((info_t *)usr_1);
+	user_data_t *usr_data_1 = info_1.value;
+	user_data_t *usr_data_2 = info_2.value;
 	int diff = usr_data_1->score - usr_data_2->score;
 	if (diff)
 		return diff;
-	return strcmp((char *)((info_t *)usr_1)->key, (char *)((info_t *)usr_2)->key);
+	return strcmp((char *)info_1.key, (char *)info_2.key);
 }
 
 // Prints name and user info.
