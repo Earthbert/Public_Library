@@ -84,7 +84,7 @@ borrow_book(hashtable_t *usr_table, hashtable_t *lib)
 	}
 
 	b_data->barrowed = 1;
-	usr_data->b_book = strdup(name);
+	usr_data->b_book = strdup(b_name);
 	usr_data->days = days;
 }
 
@@ -141,7 +141,7 @@ return_book(hashtable_t *usr_table, hashtable_t *lib)
 	usr_data->days = -1;
 	
 	b_data->purchases++;
-	b_data->rating = (b_data->rating + rating) / 2;
+	b_data->rating = (b_data->rating * (b_data->purchases - 1) + rating) / b_data->purchases;
 	b_data->barrowed = 0;
 }
 
@@ -188,7 +188,7 @@ print_ranking(hashtable_t *usr_table, hashtable_t *lib)
 
 	printf("Books ranking:\n");
 	for (unsigned int i = 0; i < lib->size; i++) {
-		printf("%d. Name:%s Rating:%03f Purchases:%d\n", i + 1,
+		printf("%d. Name:%s Rating:%.3f Purchases:%d\n", i + 1,
 		(char *)sorted_books[i].key,
 		((book_info_t *)sorted_books[i].value)->rating,
 		((book_info_t *)sorted_books[i].value)->purchases);
@@ -213,10 +213,9 @@ compare_users(const void *usr_1, const void *usr_2)
 {
 	info_t info_1 = *(info_t *)usr_1;
 	info_t info_2 = *(info_t *)usr_2;
-	print_u_info((info_t *)usr_1);
 	user_data_t *usr_data_1 = info_1.value;
 	user_data_t *usr_data_2 = info_2.value;
-	int diff = usr_data_1->score - usr_data_2->score;
+	int diff = usr_data_2->score - usr_data_1->score;
 	if (diff)
 		return diff;
 	return strcmp((char *)info_1.key, (char *)info_2.key);

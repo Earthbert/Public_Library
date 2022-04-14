@@ -15,7 +15,7 @@ int main()
 	char command[MAX_CMD_SIZE];
 
 	while (1) {
-		scanf("%s ", command);
+		scanf("%s", command);
 		if (!strcmp(command, "ADD_BOOK")) {
 			add_book(lib);
 			continue;
@@ -60,9 +60,10 @@ int main()
 			print_ranking(usr_table, lib);
 			break;
 		}
+		printf("Invalid command\n");
 	}
 
 	ht_free(usr_table, &free_user_struct);
-	ht_free(usr_table, &free_book_struct);
+	ht_free(lib, &free_book_struct);
 	return 0;
 }

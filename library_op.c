@@ -50,7 +50,7 @@ get_book(hashtable_t *lib)
 		return;
 	}
 
-	printf("Name:%s Rating:%03f Purchase:%d\n", book_name, b_data->rating, b_data->purchases);
+	printf("Name:%s Rating:%.3f Purchases:%d\n", book_name, b_data->rating, b_data->purchases);
 }
 
 // Removes a book 
@@ -164,5 +164,5 @@ print_b_info(info_t *data)
 	char *name = data->key;
 	book_info_t *b_data = data->value;
 
-	printf("Name:%s Rating:%03f\n", name, b_data->rating);
+	printf("Name:%s Rating:%.3f\n", name, b_data->rating);
 }
