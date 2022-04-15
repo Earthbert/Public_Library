@@ -1,7 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "utils.h"
 #include "Hashtable.h"
 
 int
@@ -64,7 +63,7 @@ hash_function_string(void *a)
 // Allocs memory for hashtable structure
 hashtable_t *
 ht_create(unsigned int hmax, unsigned int (*hash_function)(void*),
-		int (*compare_function)(void*, void*))
+		int (*compare_function)(void*, void*), void (*free_val_func)(void *))
 {
 	hashtable_t *ht;
 	ht = calloc(1, sizeof(hashtable_t));
@@ -77,6 +76,7 @@ ht_create(unsigned int hmax, unsigned int (*hash_function)(void*),
 	ht->hmax = hmax;
 	ht->hash_function = hash_function;
 	ht->compare_function = compare_function;
+	ht->free_val_func = free_val_func;
 	return ht;
 }
 
@@ -91,20 +91,19 @@ ht_put(hashtable_t *ht, void *key, unsigned int key_size,
 
 	unsigned int index = ht->hash_function(key) % ht->hmax;
 
-	void *old_value = ht_get(ht, key);
-	if (old_value != NULL) {
-		memcpy(old_value, value, value_size);
-	} else {
-		info_t set;
-		set.key = calloc(1, key_size);
-		DIE(!set.key, ALLOC_ERR);
-		memcpy(set.key, key, key_size);
-		set.value = calloc(1, value_size);
-		DIE(!set.value, ALLOC_ERR);
-		memcpy(set.value, value, value_size);
-		ll_add_nth_node(ht->buckets[index], ht->buckets[index]->size, &set);
-		ht->size++;
+	if (ht_has_key(ht, key)) {
+		ht_remove_entry(ht, key);
 	}
+
+	info_t set;
+	set.key = calloc(1, key_size);
+	DIE(!set.key, ALLOC_ERR);
+	memcpy(set.key, key, key_size);
+	set.value = calloc(1, value_size);
+	DIE(!set.value, ALLOC_ERR);
+	memcpy(set.value, value, value_size);
+	ll_add_nth_node(ht->buckets[index], ht->buckets[index]->size, &set);
+	ht->size++;
 }
 
 // Return the value associated with a key
@@ -147,7 +146,7 @@ ht_has_key(hashtable_t *ht, void *key)
 // Removes entry from hashtable and free all data asociated with it
 // Returns 1 is an entry was removed
 int
-ht_remove_entry(hashtable_t *ht, void *key, void (*free_value_f)(void *))
+ht_remove_entry(hashtable_t *ht, void *key)
 {
 	DIE(!ht, HT_U);
 
@@ -161,7 +160,7 @@ ht_remove_entry(hashtable_t *ht, void *key, void (*free_value_f)(void *))
 			ll_node_t *node = ll_remove_nth_node(ht->buckets[index], n);
 			info_t *data = (info_t *)node->data;
 			free(data->key);
-			free_value_f(data->value);
+			ht->free_val_func(data->value);
 			free(data);
 			free(node);
 			ht->size--;
@@ -175,7 +174,7 @@ ht_remove_entry(hashtable_t *ht, void *key, void (*free_value_f)(void *))
 
 // Frees memory of a hashtable
 void
-ht_free(hashtable_t *ht, void (*free_value_f)(void *))
+ht_free(hashtable_t *ht)
 {
 	DIE(!ht, HT_U);
 
@@ -185,7 +184,7 @@ ht_free(hashtable_t *ht, void (*free_value_f)(void *))
 			ll_node_t *next = node->next;
 			info_t *data = (info_t *)node->data;
 			free(data->key);
-			free_value_f(data->value);
+			ht->free_val_func(data->value);
 			free(data);
 			free(node);
 			node = next;

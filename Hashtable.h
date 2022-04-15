@@ -2,6 +2,7 @@
 #define __HASHTABLE_H
 
 #include "LinkedList.h"
+#include "utils.h"
 
 #define HTMAX 10
 #define LOAD_F 1.0
@@ -22,6 +23,7 @@ struct hashtable_t
 	linked_list_t **buckets;
 	unsigned int size;
 	unsigned int hmax;
+	void (*free_val_func)(void *);
 	unsigned int (*hash_function)(void*);
 	int (*compare_function)(void*, void*);
 };
@@ -30,7 +32,7 @@ struct hashtable_t
 
 hashtable_t *
 ht_create(unsigned int hmax, unsigned int (*hash_function)(void*),
-		int (*compare_function)(void*, void*));
+		int (*compare_function)(void*, void*), void (*free_val_func)(void *));
 
 void
 ht_put(hashtable_t *ht, void *key, unsigned int key_size,
@@ -43,10 +45,10 @@ int
 ht_has_key(hashtable_t *ht, void *key);
 
 int
-ht_remove_entry(hashtable_t *ht, void *key, void (*free_value_f)(void *));
+ht_remove_entry(hashtable_t *ht, void *key);
 
 void
-ht_free(hashtable_t *ht, void (*free_value_f)(void *));
+ht_free(hashtable_t *ht);
 
 void
 resize_ht(hashtable_t *ht, double load_factor);
