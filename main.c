@@ -1,16 +1,20 @@
+// Copyright 2022 Daraban Albert-Timotei
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
-#include "user_op.h"
-#include "library_op.h"
+#include "./user_op.h"
+#include "./library_op.h"
 
 #define MAX_CMD_SIZE 10
 
 int main()
 {
-	hashtable_t *usr_table = ht_create(HTMAX, &hash_function_string, &compare_function_strings, &free_user_struct);
-	hashtable_t *lib = ht_create(HTMAX, &hash_function_string, &compare_function_strings, &free_book_struct);
+	hashtable_t *usr_table = ht_create(HTMAX, &hash_function_string,
+	&compare_function_strings, &free_user_struct);
+
+	hashtable_t *lib = ht_create(HTMAX, &hash_function_string,
+	&compare_function_strings, &free_book_struct);
 
 	char command[MAX_CMD_SIZE];
 

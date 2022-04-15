@@ -1,8 +1,10 @@
+// Copyright 2022 Daraban Albert-Timotei
 #ifndef _USER_OP_H_
 #define _USER_OP_H_
 
-#include "Hashtable.h"
-#include "utils.h"
+#include "./library_op.h"
+#include "./Hashtable.h"
+#include "./utils.h"
 
 // Messages
 #define ALREADY_REG printf("User is already registered.\n");
@@ -10,7 +12,8 @@
 #define BANNED printf("You are banned from this library.\n");
 #define BORROWED printf("The book is borrowed.\n");
 #define ALREADY_BWD printf("You have already borrowed a book.\n");
-#define USER_BANNED(usr) printf("The user %s has been banned from this library.\n", usr);
+#define USER_BANNED(usr) printf										\
+("The user %s has been banned from this library.\n", usr);
 #define NOT_BWD_BOOK printf("You didn't borrow this book.\n");
 
 #define MAX_U_NAME_SIZE 20

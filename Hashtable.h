@@ -1,8 +1,12 @@
-#ifndef __HASHTABLE_H
-#define __HASHTABLE_H
+// Copyright 2022 Daraban Albert-Timotei
+#ifndef _HASHTABLE_H_
+#define _HASHTABLE_H_
 
-#include "LinkedList.h"
-#include "utils.h"
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include "./LinkedList.h"
+#include "./utils.h"
 
 #define HTMAX 10
 #define LOAD_F 1.0
@@ -58,7 +62,7 @@ void
 resize_ht(hashtable_t *ht, double load_factor);
 
 info_t *
-ht_sort(hashtable_t *ht, int (*compare_func)(const void *,const void *));
+ht_sort(hashtable_t *ht, int (*compare_func)(const void *, const void *));
 
 void
 ht_print(hashtable_t *ht, void (*print_data)(info_t *));

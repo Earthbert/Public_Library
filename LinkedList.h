@@ -1,5 +1,11 @@
+// Copyright 2022 Daraban Albert-Timotei
 #ifndef __LINKED_LIST_H_
 #define __LINKED_LIST_H_
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include "./utils.h"
 
 typedef struct ll_node_t ll_node_t;
 struct ll_node_t

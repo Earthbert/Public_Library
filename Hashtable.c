@@ -1,7 +1,5 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include "Hashtable.h"
+// Copyright 2022 Daraban Albert-Timotei
+#include "./Hashtable.h"
 
 int
 compare_function_ints(void *a, void *b)
@@ -50,8 +48,8 @@ hash_function_string(void *a)
 	/*
 	 * Credits: http://www.cse.yorku.ca/~oz/hash.html
 	 */
-	unsigned char *puchar_a = (unsigned char*) a;
-	unsigned long hash = 5381;
+	__uint8_t *puchar_a = (__uint8_t*) a;
+	__uint64_t hash = 5381;
 	int c;
 
 	while ((c = *puchar_a++))
@@ -111,7 +109,7 @@ void *
 ht_get(hashtable_t *ht, void *key)
 {
 	DIE(!ht, HT_U);
-	
+
 	unsigned int index = ht->hash_function(key) % ht->hmax;
 	ll_node_t *node = ht->buckets[index]->head;
 
@@ -131,7 +129,7 @@ ht_has_key(hashtable_t *ht, void *key)
 	DIE(!ht, HT_U);
 
 	unsigned int index = ht->hash_function(key) % ht->hmax;
-	
+
 	ll_node_t *node = ht->buckets[index]->head;
 	while (node)
 	{
@@ -139,7 +137,7 @@ ht_has_key(hashtable_t *ht, void *key)
 			return 1;
 		node = node->next;
 	}
-	
+
 	return 0;
 }
 
@@ -151,7 +149,7 @@ ht_remove_entry(hashtable_t *ht, void *key)
 	DIE(!ht, HT_U);
 
 	unsigned int index = ht->hash_function(key) % ht->hmax;
-	
+
 	ll_node_t *node = ht->buckets[index]->head;
 	unsigned int n = 0;
 	while (node)
@@ -203,14 +201,14 @@ resize_ht(hashtable_t *ht, double load_factor) {
 
 	if ((ht->size / ht->hmax) < load_factor)
 		return;
-	
+
 	linked_list_t **new_buckets = calloc(ht->hmax * 2, sizeof(linked_list_t *));
 	DIE(!new_buckets, ALLOC_ERR);
 	unsigned int new_hmax = 2 * ht->hmax;
 
 	for (unsigned int i = 0; i < new_hmax; i++)
 		new_buckets[i] = ll_create(sizeof(info_t));
-	
+
 	for (unsigned int i = 0; i < ht->hmax; i++) {
 		ll_node_t *node = ht->buckets[i]->head;
 		while (node) {
@@ -230,7 +228,8 @@ resize_ht(hashtable_t *ht, double load_factor) {
 // It will compare using value and key
 // It doesn't copy the data
 info_t *
-ht_sort(hashtable_t *ht, int (*compare_func)(const void *,const void *)) {
+ht_sort(hashtable_t *ht, int (*compare_func)(const void *, const void *))
+{
 	if (!ht->size)
 		return NULL;
 
@@ -257,7 +256,7 @@ ht_print(hashtable_t *ht, void (*print_data)(info_t *))
 {
 	if (!ht->size)
 		return;
-	
+
 	for (unsigned int i = 0; i < ht->hmax; i++) {
 		ll_node_t *node = ht->buckets[i]->head;
 		while (node) {

@@ -1,9 +1,8 @@
+// Copyright 2022 Daraban Albert-Timotei
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
-
-#include "user_op.h"
-#include "library_op.h"
+#include "./user_op.h"
 
 // Used at registering book name in user_data_t
 char *
@@ -43,7 +42,8 @@ add_user(hashtable_t *usr_table)
 	usr_data.score = 100;
 	usr_data.days = -1;
 
-	ht_put(usr_table, name, strlen(name) + 1, &usr_data, sizeof(user_data_t), LOAD_F);
+	ht_put(usr_table, name, strlen(name) + 1, &usr_data,
+	sizeof(user_data_t), LOAD_F);
 }
 
 // Registers the act of borrowing
@@ -138,9 +138,10 @@ return_book(hashtable_t *usr_table, hashtable_t *lib)
 	free(usr_data->b_book);
 	usr_data->b_book = NULL;
 	usr_data->days = -1;
-	
+
 	b_data->purchases++;
-	b_data->rating = (b_data->rating * (b_data->purchases - 1) + rating) / b_data->purchases;
+	b_data->rating = (b_data->rating * (b_data->purchases - 1) + rating)
+	/ b_data->purchases;
 	b_data->barrowed = 0;
 }
 

@@ -1,8 +1,12 @@
+// Copyright 2022 Daraban Albert-Timotei
 #ifndef _LIBRARY_H_
 #define _LIBRARY_H_
 
-#include "Hashtable.h"
-#include "utils.h"
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include "./Hashtable.h"
+#include "./utils.h"
 
 // Messages
 #define BOOK_NOT_FOUND printf("The book is not in the library.\n");
@@ -19,7 +23,7 @@
 	}														\
 
 // Used at rounding rating for books
-#define ROUND(d) d = (double)((int)(d * 1000)) / 1000; 
+#define ROUND(d) d = (double)((int)(d * 10000)) / 10000;
 
 // Stored data about a book
 // The name will be stored as the key in the lib hashtable
@@ -29,7 +33,7 @@ struct book_info_t
 	// Hashtable of definitions
 	hashtable_t *defs;
 	// Rating of the book
-	float rating;
+	double rating;
 	// Nr of purchases
 	unsigned int purchases;
 	//  Is 1 if book is barrowed

@@ -1,11 +1,12 @@
+// Copyright 2022 Daraban Albert-Timotei
 /**
  * Useful structures/macros
  * 
  * https://ocw.cs.pub.ro/courses/so/laboratoare/resurse/die
  */
 
-#ifndef __UTILS_H_
-#define __UTILS_H_
+#ifndef _UTILS_H_
+#define _UTILS_H_
 
 #include <stdlib.h>
 #include <stdio.h>
@@ -25,4 +26,4 @@
 		}												\
 	} while (0)
 
-#endif /* __UTILS_H_ */
+#endif  // _UTILS_H_

@@ -1,8 +1,5 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
-#include "library_op.h"
+// Copyright 2022 Daraban Albert-Timotei
+#include "./library_op.h"
 
 // Used at removing entries from lib hashtable
 void
@@ -18,20 +15,22 @@ add_book(hashtable_t *lib)
 {
 	char book_name[MAX_B_NAME_SIZE];
 	SCANF_WHOLE(book_name);
-	unsigned int nr_defs;
-	scanf("%u", &nr_defs);
+	int nr_defs;
+	scanf("%d", &nr_defs);
 
 	book_info_t b_data;
-	b_data.defs = ht_create(HTMAX, &hash_function_string, &compare_function_strings, &free);
+	b_data.defs = ht_create(HTMAX, &hash_function_string,
+	&compare_function_strings, &free);
 	b_data.purchases = 0;
 	b_data.rating = 0;
 	b_data.barrowed = 0;
 
 	char def_key[MAX_KEY_SIZE];
 	char def_value[MAX_VAL_SIZE];
-	for (unsigned int i = 0; i < nr_defs; i++) {
+	for (int i = 0; i < nr_defs; i++) {
 		scanf("%s %s", def_key, def_value);
-		ht_put(b_data.defs, def_key, strlen(def_key) + 1, def_value, strlen(def_value) + 1, LOAD_F);
+		ht_put(b_data.defs, def_key, strlen(def_key) + 1,
+		def_value, strlen(def_value) + 1, LOAD_F);
 	}
 
 	ht_put(lib, book_name, strlen(book_name) + 1, &b_data, sizeof(b_data), LOAD_F);
@@ -40,7 +39,7 @@ add_book(hashtable_t *lib)
 // Prints information about a book
 void
 get_book(hashtable_t *lib)
-{	
+{
 	char book_name[MAX_B_NAME_SIZE];
 	SCANF_WHOLE(book_name);
 
@@ -50,10 +49,11 @@ get_book(hashtable_t *lib)
 		return;
 	}
 
-	printf("Name:%s Rating:%.3f Purchases:%d\n", book_name, b_data->rating, b_data->purchases);
+	printf("Name:%s Rating:%.3f Purchases:%d\n", book_name,
+	b_data->rating, b_data->purchases);
 }
 
-// Removes a book 
+// Removes a book
 void
 rmv_book(hashtable_t *lib)
 {
@@ -84,7 +84,8 @@ add_def(hashtable_t *lib)
 		return;
 	}
 
-	ht_put(b_data->defs, def_key, strlen(def_key) + 1, def_value, strlen(def_value) + 1, LOAD_F);
+	ht_put(b_data->defs, def_key, strlen(def_key) + 1,
+	def_value, strlen(def_value) + 1, LOAD_F);
 }
 
 // Prints a requested definition
@@ -140,7 +141,7 @@ compare_books(const void *data_1, const void *data_2) {
 	info_t info_2 = *(info_t *)data_2;
 	book_info_t *b_data_1 = (book_info_t *)info_1.value;
 	book_info_t *b_data_2 = (book_info_t *)info_2.value;
-	
+
 	float diff = b_data_2->rating - b_data_1->rating;
 	ROUND(diff);
 	if (diff > 0) {

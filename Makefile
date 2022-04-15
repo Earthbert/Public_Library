@@ -1,5 +1,5 @@
 CFLAG = -Wall -Wextra -std=c99 -g
-EXEC = library
+EXEC = main
 CC = gcc
 
 all: main
@@ -21,7 +21,7 @@ Linkedlist.o: LinkedList.c
 user_op.o: user_op.c
 	${CC} ${CFLAG} -c -o $@ $?
 
-library_op: library_op.c
+library_op.o: library_op.c
 	${CC} ${CFLAG} -c -o $@ $?
 
 clean:
