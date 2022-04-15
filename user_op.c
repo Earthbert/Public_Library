@@ -67,6 +67,10 @@ borrow_book(hashtable_t *usr_table, hashtable_t *lib)
 		BANNED
 		return;
 	}
+	if (usr_data->b_book) {
+		ALREADY_BWD
+		return;
+	}
 
 	book_info_t *b_data = ht_get(lib, b_name);
 	if (!b_data) {
@@ -75,11 +79,6 @@ borrow_book(hashtable_t *usr_table, hashtable_t *lib)
 	}
 	if (b_data->barrowed) {
 		BORROWED
-		return;
-	}
-
-	if (usr_data->b_book) {
-		ALREADY_BWD
 		return;
 	}
 
@@ -126,9 +125,9 @@ return_book(hashtable_t *usr_table, hashtable_t *lib)
 
 	int return_delay = usr_data->days - days;
 	if (return_delay > 0) {
-		usr_data->score += 2 * return_delay;
-	} else {
 		usr_data->score += return_delay;
+	} else {
+		usr_data->score += 2 * return_delay;
 	}
 
 	if (usr_data->score < 0) {
@@ -167,7 +166,7 @@ lost_book(hashtable_t *usr_table, hashtable_t *lib)
 
 	ht_remove_entry(lib, b_name);
 
-	usr_data->score -= 20;
+	usr_data->score -= 50;
 	if (usr_data->score < 0) {
 		USER_BANNED(name)
 		usr_data->is_banned = 1;
@@ -196,6 +195,8 @@ print_ranking(hashtable_t *usr_table, hashtable_t *lib)
 
 	printf("Users ranking:\n");
 	for (unsigned int i = 0; i < usr_table->size; i++) {
+		if (((user_data_t *)sorted_users[i].value)->is_banned == 1)
+			break;
 		printf("%d. Name:%s Points:%d\n", i + 1,
 		(char *)sorted_users[i].key,
 		((user_data_t *)sorted_users[i].value)->score);

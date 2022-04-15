@@ -6,7 +6,7 @@ all: main
 
 build: main
 
-main: main.o user_op.o library_op.o Hashtable.o Linkedlist.o
+main: Linkedlist.o Hashtable.o library_op.o user_op.o main.o
 	${CC} ${CFLAG} -o ${EXEC} $?
 
 main.o: main.c

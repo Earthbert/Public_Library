@@ -140,15 +140,17 @@ compare_books(const void *data_1, const void *data_2) {
 	info_t info_2 = *(info_t *)data_2;
 	book_info_t *b_data_1 = (book_info_t *)info_1.value;
 	book_info_t *b_data_2 = (book_info_t *)info_2.value;
-
-	if (b_data_1->rating > b_data_2->rating) {
+	
+	float diff = b_data_2->rating - b_data_1->rating;
+	ROUND(diff);
+	if (diff > 0) {
 		return 1;
-	} else if (b_data_1->rating < b_data_2->rating) {
+	} else if (diff < 0) {
 		return -1;
 	}
 
 	if (b_data_1->purchases != b_data_2->purchases) {
-		return b_data_1->purchases - b_data_2->purchases;
+		return b_data_2->purchases - b_data_1->purchases;
 	}
 
 	char *name_1 = info_1.key;

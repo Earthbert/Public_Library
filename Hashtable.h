@@ -20,15 +20,19 @@ struct info_t
 typedef struct hashtable_t hashtable_t;
 struct hashtable_t
 {
+	// Arrays of linked lists in case of collisions
 	linked_list_t **buckets;
+	// Nr of elements in hashtable
 	unsigned int size;
+	// Size of the array
 	unsigned int hmax;
+	// Used at freeing values
 	void (*free_val_func)(void *);
 	unsigned int (*hash_function)(void*);
 	int (*compare_function)(void*, void*);
 };
 
-//----Hashtable functions
+// Hashtable functions
 
 hashtable_t *
 ht_create(unsigned int hmax, unsigned int (*hash_function)(void*),
@@ -59,14 +63,14 @@ ht_sort(hashtable_t *ht, int (*compare_func)(const void *,const void *));
 void
 ht_print(hashtable_t *ht, void (*print_data)(info_t *));
 
-//----Compare key functions
+// Compare key functions
 int
 compare_function_ints(void *a, void *b);
 
 int
 compare_function_strings(void *a, void *b);
 
-//----Hashing functions
+// Hashing functions
 
 unsigned int
 hash_function_int(void *a);

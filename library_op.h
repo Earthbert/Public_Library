@@ -8,15 +8,18 @@
 #define BOOK_NOT_FOUND printf("The book is not in the library.\n");
 #define DEF_NOT_FOUND printf("The definition is not in the book.\n");
 
-#define MAX_B_NAME_SIZE 60
-#define MAX_VAL_SIZE 30
-#define MAX_KEY_SIZE 30
+#define MAX_B_NAME_SIZE 40
+#define MAX_VAL_SIZE 20
+#define MAX_KEY_SIZE 20
 
-// Used at reading book name
+// Used at reading book names
 #define SCANF_WHOLE(str)									\
 	if (scanf(" \42%[^\42]\42", str) == 0) {					\
 			scanf("%s", str);								\
 	}														\
+
+// Used at rounding rating for books
+#define ROUND(d) d = (double)((int)(d * 1000)) / 1000; 
 
 // Stored data about a book
 // The name will be stored as the key in the lib hashtable
@@ -26,7 +29,7 @@ struct book_info_t
 	// Hashtable of definitions
 	hashtable_t *defs;
 	// Rating of the book
-	double rating;
+	float rating;
 	// Nr of purchases
 	unsigned int purchases;
 	//  Is 1 if book is barrowed
