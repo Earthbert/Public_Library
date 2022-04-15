@@ -9,8 +9,8 @@
 
 int main()
 {
-	hashtable_t *usr_table = ht_create(HTMAX, &hash_function_string, &compare_function_strings);
-	hashtable_t *lib = ht_create(HTMAX, &hash_function_string, &compare_function_strings);
+	hashtable_t *usr_table = ht_create(HTMAX, &hash_function_string, &compare_function_strings, &free_user_struct);
+	hashtable_t *lib = ht_create(HTMAX, &hash_function_string, &compare_function_strings, &free_book_struct);
 
 	char command[MAX_CMD_SIZE];
 
@@ -63,7 +63,7 @@ int main()
 		printf("Invalid command\n");
 	}
 
-	ht_free(usr_table, &free_user_struct);
-	ht_free(lib, &free_book_struct);
+	ht_free(usr_table);
+	ht_free(lib);
 	return 0;
 }

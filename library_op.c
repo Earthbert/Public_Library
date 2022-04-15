@@ -8,7 +8,7 @@
 void
 free_book_struct(void *book)
 {
-	ht_free(((book_info_t *)book)->defs, &free);
+	ht_free(((book_info_t *)book)->defs);
 	free(book);
 }
 
@@ -22,7 +22,7 @@ add_book(hashtable_t *lib)
 	scanf("%u", &nr_defs);
 
 	book_info_t b_data;
-	b_data.defs = ht_create(HTMAX, &hash_function_string, &compare_function_strings);
+	b_data.defs = ht_create(HTMAX, &hash_function_string, &compare_function_strings, &free);
 	b_data.purchases = 0;
 	b_data.rating = 0;
 	b_data.barrowed = 0;
@@ -60,7 +60,7 @@ rmv_book(hashtable_t *lib)
 	char book_name[MAX_B_NAME_SIZE];
 	SCANF_WHOLE(book_name);
 
-	int ret_val = ht_remove_entry(lib, book_name, &free_book_struct);
+	int ret_val = ht_remove_entry(lib, book_name);
 
 	if (!ret_val) {
 		BOOK_NOT_FOUND
@@ -126,7 +126,7 @@ rmv_def(hashtable_t *lib)
 		return;
 	}
 
-	int ret_val = ht_remove_entry(b_data->defs, def_key, &free);
+	int ret_val = ht_remove_entry(b_data->defs, def_key);
 
 	if (!ret_val) {
 		DEF_NOT_FOUND

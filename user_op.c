@@ -165,7 +165,7 @@ lost_book(hashtable_t *usr_table, hashtable_t *lib)
 		return;
 	}
 
-	ht_remove_entry(lib, b_name, &free_book_struct);
+	ht_remove_entry(lib, b_name);
 
 	usr_data->score -= 20;
 	if (usr_data->score < 0) {

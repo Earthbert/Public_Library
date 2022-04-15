@@ -5,7 +5,7 @@
 #include "utils.h"
 
 // Messages
-#define ALREADY_REG printf("User is already registered\n");
+#define ALREADY_REG printf("User is already registered.\n");
 #define NOT_REG printf("You are not registered yet.\n");
 #define BANNED printf("You are banned from this library.\n");
 #define BORROWED printf("The book is borrowed.\n");

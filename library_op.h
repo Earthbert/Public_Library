@@ -8,9 +8,9 @@
 #define BOOK_NOT_FOUND printf("The book is not in the library.\n");
 #define DEF_NOT_FOUND printf("The definition is not in the book.\n");
 
-#define MAX_B_NAME_SIZE 40
-#define MAX_VAL_SIZE 20
-#define MAX_KEY_SIZE 20
+#define MAX_B_NAME_SIZE 60
+#define MAX_VAL_SIZE 30
+#define MAX_KEY_SIZE 30
 
 // Used at reading book name
 #define SCANF_WHOLE(str)									\
